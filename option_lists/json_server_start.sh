@@ -1,0 +1,1 @@
+/opt/jsonserver/jsctl.sh start

@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "0315c83d-a06f-4cce-8115-4678af20f67d",
+		"name": "Tenant Creation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Tenant Role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"bodyData = JSON.parse(responseBody)",
+							"value = bodyData.role.id",
+							"console.log(value)",
+							"pm.environment.set(\"roleId\", value);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"role\": {\n    \"authority\": tenantrole,\n    \"description\": null,\n    \"roleType\": \"account\",\n    \"baseRoleId\": 2\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localBasedUrl}}/api/roles",
+					"host": [
+						"{{localBasedUrl}}"
+					],
+					"path": [
+						"api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"bodyData = JSON.parse(responseBody)",
+							"value = bodyData.account.id",
+							"console.log(value)",
+							"pm.environment.set(\"accountId\", value);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"account\": {\n    \"name\": \"{{tenantName}}\",\n    \"description\": null,\n    \"subdomain\": \"{{subdomain}}\",\n    \"currency\": \"USD\",\n    \"role\": {\n      \"id\": \"{{roleId}}\"\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localBasedUrl}}/api/accounts",
+					"host": [
+						"{{localBasedUrl}}"
+					],
+					"path": [
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Multi-Tenant User Role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"bodyData = JSON.parse(responseBody)",
+							"value = bodyData.role.id",
+							"console.log(value)",
+							"pm.environment.set(\"mtRoleId\", value);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"role\": {\n    \"authority\": \"mtrole\",\n    \"description\": null,\n    \"roleType\": \"user\",\n    \"baseRoleId\": 3,\n    \"multitenant\": true,\n    \"multitenantLocked\": false\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localBasedUrl}}/api/roles",
+					"host": [
+						"{{localBasedUrl}}"
+					],
+					"path": [
+						"api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Tenant User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"bodyData = JSON.parse(responseBody)",
+							"value = bodyData.user.id",
+							"console.log(value)",
+							"pm.environment.set(\"userId\", value);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"user\": {\n    \"firstName\": \"tenant\",\n    \"lastName\": \"admin\",\n    \"username\": \"admin\",\n    \"email\": \"admin@dev.null\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirmation\": \"{{password}}\",\n    \"roles\": [\n      {\n        \"id\": \"{{mtRoleId}}\"\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localBasedUrl}}/api/accounts/{{accountId}}/users",
+					"host": [
+						"{{localBasedUrl}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"{{accountId}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "tokenName",
+				"value": "Morpheus",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "morph-api",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "write",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "M0rph@dmin",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{localBasedUrl}}/oauth/token?grant_type=password",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "password_credentials",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "roleid",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
